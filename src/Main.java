@@ -26,7 +26,7 @@ public class Main {
             } else if (isArabian(s[0]) && isArabian(s[2])) {
                 int number1 = Integer.parseInt(s[0]);
                 int number2 = Integer.parseInt(s[2]);
-                if (number1 > 10 || number2 > 10) {
+                if (number1 > 10 || number2 > 10 || number1 <1 || number2 < 1) {
                     return "throws Exception //т.к. Калькулятор должен принимать на вход числа от 1 до 10 " +
                             "включительно, не более";
                 }
