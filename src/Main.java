@@ -6,7 +6,7 @@ public class Main {
         System.out.println("Input:");
         String input = scanner.nextLine();
         System.out.println("Output:");
-        System.out.println(Main.calc(input));
+        System.out.println(calc(input));
         scanner.close();
     }
     public static String calc(String input){
