@@ -1,29 +1,39 @@
-public class Main {
-    public static String calc(String input) throws Exception {
-        String result;
-        String formattedString = formedStr(input);
-        String[] s = formattedString.split(" ");
 
-        if (isRoman(s[0]) && isRoman(s[2])){
-            int number1 = RomanNumber.valueOf(s[0]).getValue();
-            int number2 = RomanNumber.valueOf(s[2]).getValue();
-            int romanResult = calculate(number1, number2, s[1]);
-            if(romanResult < 0){
-                throw new Exception("в римской системе нет отрицательных чисел");
+public class Main {
+    public static String calc(String input) throws WrongInputDataExeption, WrongMathExpressionExeption {
+        try {
+            String result = "";
+            String formattedString = formedStr(input);
+            String[] s = formattedString.split(" ");
+
+            if (isRoman(s[0]) && isRoman(s[2])) {
+                int number1 = RomanNumber.valueOf(s[0]).getValue();
+                int number2 = RomanNumber.valueOf(s[2]).getValue();
+                int romanResult = calculate(number1, number2, s[1]);
+                if (romanResult < 0) {
+                    return "throws Exception //т.к. в римской системе нет отрицательных чисел";
+                }
+                result = toRoman(romanResult);
+            } else if (isArabian(s[0]) && isArabian(s[2])) {
+                int number1 = Integer.parseInt(s[0]);
+                int number2 = Integer.parseInt(s[2]);
+                if (number1 > 10 || number2 > 10) {
+                    return "throws Exception //т.к. Калькулятор должен принимать на вход числа от 1 до 10 " +
+                            "включительно, не более";
+                }
+                Integer arabianResult = (Integer) calculate(number1, number2, s[1]);
+                result = arabianResult.toString();
+            } else {
+                return "throws Exception //т.к. используются одновременно разные системы счисления";
             }
-            result = toRoman(romanResult);
-        } else if(isArabian(s[0]) && isArabian(s[2])){
-            int number1 = Integer.parseInt(s[0]);
-            int number2 = Integer.parseInt(s[2]);
-            if(number1 > 10 || number2 > 10){
-                throw new Exception("Калькулятор должен принимать на вход числа от 1 до 10 включительно, не более");
-            }
-            Integer arabianResult = (Integer) calculate(number1, number2, s[1]);
-            result = arabianResult.toString();
-        } else {
-            throw new Exception("используются одновременно разные системы счисления");
+            return result;
+
+        }catch (WrongMathExpressionExeption e) {
+            return "throws Exception //т.к. строка не является математической операцией";
+        }catch (WrongInputDataExeption e){
+            return "throws Exception //т.к. формат математической операции не удовлетворяет" +
+                    " заданию - два операнда и один оператор (+, -, /, *)";
         }
-        return result;
     }
 
     static String toRoman(int romanResult) {
@@ -110,7 +120,7 @@ public class Main {
             return false;
         }
     }
-    static String formedStr(String input) throws Exception {
+    static String formedStr(String input) throws WrongMathExpressionExeption, WrongInputDataExeption {
         String[] split;
         String result;
         String sign;
@@ -127,11 +137,10 @@ public class Main {
             split = input.split("/");
             sign = "/";
         } else {
-            throw new Exception("строка не является математической операцией");
+            throw new WrongMathExpressionExeption();
         }
         if (split.length>2){
-            throw new Exception("формат математической операции не удовлетворяет " +
-                    "заданию - два операнда и один оператор (+, -, /, *)");
+            throw new WrongInputDataExeption();
         } else {
             result = deleteExtraProbel(split[0]) + sign + " " + deleteExtraProbel(split[1]);
             return result.substring(0, result.length()-1);
@@ -165,4 +174,8 @@ public class Main {
             this.value = value;
         }
     }
+}
+class WrongMathExpressionExeption extends Exception{
+}
+class WrongInputDataExeption extends Exception{
 }
